@@ -7,7 +7,7 @@ This pipe will publish .pbix files into Power BI Service
 Add the following snippet to the script section of your `bitbucket-pipelines.yml` file:
 
 ```yaml
-- pipe: dfrnks/power-bi-publish:0.0.0
+- pipe: dfrnks/power-bi-publish:0.1.0
   variables:
     NAME: "<string>"
     # DEBUG: "<boolean>" # Optional
@@ -29,7 +29,7 @@ Basic example:
 
 ```yaml
 script:
-  - pipe: dfrnks/power-bi-publish:0.0.0
+  - pipe: dfrnks/power-bi-publish:0.1.0
     variables:
       NAME: "foobar"
 ```
@@ -38,7 +38,7 @@ Advanced example:
 
 ```yaml
 script:
-  - pipe: dfrnks/power-bi-publish:0.0.0
+  - pipe: dfrnks/power-bi-publish:0.1.0
     variables:
       NAME: "foobar"
       DEBUG: "true"
