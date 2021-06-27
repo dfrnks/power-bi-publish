@@ -17,6 +17,8 @@ class DemoPipe(Pipe):
 
         print(name)
 
+        print('Hello Pipes')
+
         self.success(message="Success!")
 
 
