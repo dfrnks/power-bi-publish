@@ -38,4 +38,4 @@ class PowerBiPublishPipe(Pipe):
         #
         # print('Hello Pipes')
 
-        self.success(message="Execution test with success!")
+        self.success(message="Execution with success!")

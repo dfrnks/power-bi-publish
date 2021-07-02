@@ -39,10 +39,15 @@ def test_success():
     args = [
         'docker',
         'run',
-        '-e', 'NAME=hello world',
+        '-e', 'USERNAME=username',
+        '-e', 'PASSWORD=password',
+        '-e', 'CLIENT_ID=clientid',
+        '-e', 'CLIENT_SECRET=clientsecret',
+        '-e', 'WORKSPACE=workspace',
+        '-e', 'DIRECTORY_PBIX=workspaces',
         docker_image,
     ]
 
     result = subprocess.run(args, check=False, text=True, capture_output=True)
-    assert 'hello world' in result.stdout
+    assert '\x1b[32m✔ Execution with success!\x1b[0m\n' in result.stdout
     assert result.returncode == 0
