@@ -1,3 +1,14 @@
+## Test Local
+```sh
+docker build -t dfrnks/power-bi-publish:0.1.0 .
+```
+
+```sh
+docker run -e NAME="first last" -e DEBUG="true" -v $(pwd):$(pwd) -w $(pwd) dfrnks/power-bi-publish:0.1.0
+
+docker run -e CLIENT_ID='fdfd' -e CLIENT_SECRET='ff' -e DIRECTORY_PBIX='workspaces' -e PASSWORD='f' -e USERNAME='dfd' -e WORKSPACE='df' -e PARAMETER_COUNT='2' -e PARAMETER_0="sdsd:dsds" -e PARAMETER_1="sfsd:dsds" -v $(pwd):$(pwd) -w $(pwd) bitbucketpipelines/demo-pipe-python:cilocal
+```
+
 ## Releasing a new version
 
 This pipe uses an automated release process to bump versions using semantic versioning and generate the CHANGELOG.md file automatically. 

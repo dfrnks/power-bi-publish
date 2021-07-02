@@ -1,27 +1,20 @@
 from bitbucket_pipes_toolkit import Pipe, get_logger
+from src.PowerBiPublish import PowerBiPublishPipe
 
 logger = get_logger()
 
 schema = {
-  'NAME': {'type': 'string', 'required': True},
+  'USERNAME': {'type': 'string', 'required': True},
+  'PASSWORD': {'type': 'string', 'required': True},
+  'CLIENT_ID': {'type': 'string', 'required': True},
+  'CLIENT_SECRET': {'type': 'string', 'required': True},
+  'WORKSPACE': {'type': 'string', 'required': True},
+  'DIRECTORY_PBIX': {'type': 'string', 'required': True},
+  'GATEWAY': {'type': 'string', 'required': False, 'default': ''},
+  'PARAMETER': {'type': 'list', 'required': False, 'default': ''},
   'DEBUG': {'type': 'boolean', 'required': False, 'default': False}
 }
 
-
-class DemoPipe(Pipe):
-    def run(self):
-        super().run()
-
-        logger.info('Executing the pipe...')
-        name = self.get_variable('NAME')
-
-        print(name)
-
-        print('Hello Pipes')
-
-        self.success(message="Success!")
-
-
 if __name__ == '__main__':
-    pipe = DemoPipe(pipe_metadata='/pipe.yml', schema=schema)
+    pipe = PowerBiPublishPipe(pipe_metadata='/pipe.yml', schema=schema)
     pipe.run()
