@@ -53,3 +53,6 @@ If you’re reporting an issue, please include:
 - the version of the pipe
 - relevant logs and error messages
 - steps to reproduce
+
+
+## [Donation](https://www.paypal.com/donate?hosted_button_id=6GMU7LV7CAN54)
