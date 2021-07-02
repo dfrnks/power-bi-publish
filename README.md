@@ -10,6 +10,16 @@ Add the following snippet to the script section of your `bitbucket-pipelines.yml
 - pipe: dfrnks/power-bi-publish:0.1.0
   variables:
     NAME: "<string>"
+    USERNAME: "<string>"
+    PASSWORD: "<string>"
+    CLIENT_ID: "<string>"
+    CLIENT_SECRET: "<string>"
+    WORKSPACE: "<string>"
+    DIRECTORY_PBIX: "<string>"
+    # GATEWAY: "<string>" # Optional
+    # PARAMETER_0: "<string>" # Optional
+    # PARAMETER_1: "<string>" # Optional
+    # PARAMETER_COUNT: "<string>" # Optional
     # DEBUG: "<boolean>" # Optional
 ```
 ## Variables
