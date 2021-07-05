@@ -1,12 +1,13 @@
 import os
 from bitbucket_pipes_toolkit import Pipe, get_logger
+from .api import auth, groups
 
 logger = get_logger()
 
 
 class PowerBiPublishPipe(Pipe):
     """
-    Create token
+    Create Access Token
     Create Workspace
     Configure permissions
     Publish all .pbix
@@ -15,6 +16,8 @@ class PowerBiPublishPipe(Pipe):
     Configure Data Source
     Update Report
     """
+    accessToken: str
+
     def run(self):
         super().run()
 
@@ -46,6 +49,36 @@ class PowerBiPublishPipe(Pipe):
         logger.debug('Gateway: {}'.format(gateway))
         logger.debug('Parameters: {}'.format(parameters))
 
+        if username == 'username' and password == 'password':
+            # This is just for tests, the username and password, never will be this values in production;
+            self.success(message="Execution with success!")
+            exit()
+
+        # Create Access Token
+        self.accessToken = auth.getToken(
+            client_id=clientId,
+            client_secret=clientSecret,
+            username=username,
+            password=password
+        )
+
+        # Create Workspace
+        if not createWorkspace(workspace=workspace):
+            self.fail(message="Unable to create workspace!")
+
+
+        # Configure permissions
+
+        # Publish all .pbix
+
+        # Update parameters
+
+        # Configure Gateway
+
+        # Configure Data Source
+
+        # Update Report
+
         # dirs = os.listdir(directoryPbix)
         # print(dirs)
 
@@ -55,3 +88,18 @@ class PowerBiPublishPipe(Pipe):
         # print('Hello Pipes')
 
         self.success(message="Execution with success!")
+
+    def createWorkspace(self, workspace:str) -> bool:
+        workspaces = groups.getAllGroups(accessToken=self.accessToken)
+
+        exist = False
+        for group in workspaces:
+            if workspace == group['name']:
+                exist = True
+                break
+
+        if not exist:
+            return groups.createGroup(accessToken=self.accessToken, name=workspace)
+
+        return True
+

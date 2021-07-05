@@ -14,7 +14,7 @@ def getToken(client_id: str, client_secret: str, username: str, password: str) -
 
     url = "https://login.microsoftonline.com/common/oauth2/token"
 
-    payload={
+    payload = {
         'grant_type': 'password',
         'scope': 'openid',
         'resource': 'https://analysis.windows.net/powerbi/api',

@@ -1,11 +1,30 @@
-from pipe.src.auth.auth import getToken
 import pytest
+from pipe.src.api import auth
+
+urlMock = 'https://login.microsoftonline.com/common/oauth2/token'
 
 
 def test_auth(requests_mock):
-    authToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Im5PbzNaRHJPRFhFSzFqS1doWHNsSFJfS1hFZyIsImtpZCI6Im5PbzNaRHJPRFhFSzFqS1doWHNsSFJfS1hFZyJ9.eyJhdWQiOiJodHRwczovL2FuYWx5c2lzLndpbmRvd3MubmV0L3Bvd2VyYmkvYXBpIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvOTdmYTFmOTYtNzg3Ny00NjlmLWFhMzctMWY4NTY4ZTNhM2ZmLyIsImlhdCI6MTYyNTQ4NzYxNiwibmJmIjoxNjI1NDg3NjE2LCJleHAiOjE2MjU0OTE1MTYsImFjY3QiOjAsImFjciI6IjEiLCJhaW8iOiJFMlpnWVBpaHArKzI2M1Bnc243bCtwUHpiUnc4dWRKMmFFM0xmU3o4TWpuL2o4cXo5NVVBIiwiYW1yIjpbInB3ZCJdLCJhcHBpZCI6Ijk5YWM2YTM1LWFkNDYtNDI4My04NTU1LTQzYTk0YWE2NDk1MyIsImFwcGlkYWNyIjoiMSIsImZhbWlseV9uYW1lIjoiTVggRGF0YWxha2UiLCJnaXZlbl9uYW1lIjoiU2VydmljZSIsImlwYWRkciI6IjE3OS4xMjcuMTM1LjEzNSIsIm5hbWUiOiJTZXJ2aWNlIE1YIERhdGFsYWtlIiwib2lkIjoiYmExNjBhMTQtMGNjOC00MGM3LTlmOGItNGQ1NjI5OTllOWY1Iiwib25wcmVtX3NpZCI6IlMtMS01LTIxLTIwMTA5MTU4MDItNDIyMzQ3OTUyMS05NzMzMjk1MzAtMTE1NzMiLCJwdWlkIjoiMTAwMzIwMDEzOEJCMkMwNSIsInJoIjoiMC5BUW9BbGhfNmwzZDRuMGFxTngtRmFPT2pfelZxckpsR3JZTkNoVlZEcVVxbVNWTUtBRm8uIiwic2NwIjoiRGF0YXNldC5SZWFkLkFsbCBEYXRhc2V0LlJlYWRXcml0ZS5BbGwgV29ya3NwYWNlLlJlYWRXcml0ZS5BbGwiLCJzdWIiOiJ5S0JOSUl1R0NoMjI4TnVELTFDR0JhWlZWUTdoLTBQRWYtX1NRVDhySU9BIiwidGlkIjoiOTdmYTFmOTYtNzg3Ny00NjlmLWFhMzctMWY4NTY4ZTNhM2ZmIiwidW5pcXVlX25hbWUiOiJzdmMubXhkYXRhbGFrZUBjb21wYXNzby5jb20uYnIiLCJ1cG4iOiJzdmMubXhkYXRhbGFrZUBjb21wYXNzby5jb20uYnIiLCJ1dGkiOiJDUnVtQVlYX1ZrQ0hkWmRhelRPd0FRIiwidmVyIjoiMS4wIiwid2lkcyI6WyJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXX0.fF3Yqcp2zK76AbLk0mprwOsiuz2g5KZTqvl1xktS5NjugdxCccJZ02UiXXwINg0UA6FQWPCmdOonfg4-2WegmO3Zmb6dgaJkGAt6Aqz8PIRnA_hlp_nap_LYRjS3a909lmQV95asONb4_kW_qsPbc-yDfvYA6i4iJVjj52LvSLrIL0LTRMgqM68K10wA4pcw33iXDD4iq_drqWrd6Ig55JIioqS2hOG8kkCwDJFP4L6MaS3ElsEmruPF0TAmiNs9v_22XFLRxzk8qDruAOAn__bwXQsT8SZYW3EHYnbWDbNR0grUV_RiEyHAJnBr_uDcElQLE8OJGXlLXFSnvZbncg"
+    authToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Im5PbzNaRHJPRFhFSzFqS1doWHNsSFJfS1hFZyIsImtpZCI6Im5PbzNa' \
+                'RHJPRFhFSzFqS1doWHNsSFJfS1hFZyJ9.eyJhdWQiOiJodHRwczovL2FuYWx5c2lzLndpbmRvd3MubmV0L3Bvd2VyYmkvYXBpIiw' \
+                'iaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvOTdmYTFmOTYtNzg3Ny00NjlmLWFhMzctMWY4NTY4ZTNhM2ZmLyIsImlhdCI' \
+                '6MTYyNTQ4NzYxNiwibmJmIjoxNjI1NDg3NjE2LCJleHAiOjE2MjU0OTE1MTYsImFjY3QiOjAsImFjciI6IjEiLCJhaW8iOiJFMlp' \
+                'nWVBpaHArKzI2M1Bnc243bCtwUHpiUnc4dWRKMmFFM0xmU3o4TWpuL2o4cXo5NVVBIiwiYW1yIjpbInB3ZCJdLCJhcHBpZCI6Ijk' \
+                '5YWM2YTM1LWFkNDYtNDI4My04NTU1LTQzYTk0YWE2NDk1MyIsImFwcGlkYWNyIjoiMSIsImZhbWlseV9uYW1lIjoiTVggRGF0YWx' \
+                'ha2UiLCJnaXZlbl9uYW1lIjoiU2VydmljZSIsImlwYWRkciI6IjE3OS4xMjcuMTM1LjEzNSIsIm5hbWUiOiJTZXJ2aWNlIE1YIER' \
+                'hdGFsYWtlIiwib2lkIjoiYmExNjBhMTQtMGNjOC00MGM3LTlmOGItNGQ1NjI5OTllOWY1Iiwib25wcmVtX3NpZCI6IlMtMS01LTI' \
+                'xLTIwMTA5MTU4MDItNDIyMzQ3OTUyMS05NzMzMjk1MzAtMTE1NzMiLCJwdWlkIjoiMTAwMzIwMDEzOEJCMkMwNSIsInJoIjoiMC5' \
+                'BUW9BbGhfNmwzZDRuMGFxTngtRmFPT2pfelZxckpsR3JZTkNoVlZEcVVxbVNWTUtBRm8uIiwic2NwIjoiRGF0YXNldC5SZWFkLkF' \
+                'sbCBEYXRhc2V0LlJlYWRXcml0ZS5BbGwgV29ya3NwYWNlLlJlYWRXcml0ZS5BbGwiLCJzdWIiOiJ5S0JOSUl1R0NoMjI4TnVELTF' \
+                'DR0JhWlZWUTdoLTBQRWYtX1NRVDhySU9BIiwidGlkIjoiOTdmYTFmOTYtNzg3Ny00NjlmLWFhMzctMWY4NTY4ZTNhM2ZmIiwidW5' \
+                'pcXVlX25hbWUiOiJzdmMubXhkYXRhbGFrZUBjb21wYXNzby5jb20uYnIiLCJ1cG4iOiJzdmMubXhkYXRhbGFrZUBjb21wYXNzby5' \
+                'jb20uYnIiLCJ1dGkiOiJDUnVtQVlYX1ZrQ0hkWmRhelRPd0FRIiwidmVyIjoiMS4wIiwid2lkcyI6WyJiNzlmYmY0ZC0zZWY5LTQ' \
+                '2ODktODE0My03NmIxOTRlODU1MDkiXX0.fF3Yqcp2zK76AbLk0mprwOsiuz2g5KZTqvl1xktS5NjugdxCccJZ02UiXXwINg0UA6F' \
+                'QWPCmdOonfg4-2WegmO3Zmb6dgaJkGAt6Aqz8PIRnA_hlp_nap_LYRjS3a909lmQV95asONb4_kW_qsPbc-yDfvYA6i4iJVjj52L' \
+                'vSLrIL0LTRMgqM68K10wA4pcw33iXDD4iq_drqWrd6Ig55JIioqS2hOG8kkCwDJFP4L6MaS3ElsEmruPF0TAmiNs9v_22XFLRxzk' \
+                '8qDruAOAn__bwXQsT8SZYW3EHYnbWDbNR0grUV_RiEyHAJnBr_uDcElQLE8OJGXlLXFSnvZbncg'
 
-    requests_mock.post('https://login.microsoftonline.com/common/oauth2/token', text="""{
+    requests_mock.post(urlMock, text="""{
     "token_type": "Bearer",
     "scope": "Dataset.Read.All Dataset.ReadWrite.All Workspace.ReadWrite.All",
     "expires_in": "3599",
@@ -18,7 +37,7 @@ def test_auth(requests_mock):
     "id_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiI5OWFjNmEzNS1hZDQ2LTQyODMtODU1NS00M2E5NGFhNjQ5NTMiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC85N2ZhMWY5Ni03ODc3LTQ2OWYtYWEzNy0xZjg1NjhlM2EzZmYvIiwiaWF0IjoxNjI1NDg3NjE2LCJuYmYiOjE2MjU0ODc2MTYsImV4cCI6MTYyNTQ5MTUxNiwiYW1yIjpbInB3ZCJdLCJmYW1pbHlfbmFtZSI6Ik1YIERhdGFsYWtlIiwiZ2l2ZW5fbmFtZSI6IlNlcnZpY2UiLCJpcGFkZHIiOiIxNzkuMTI3LjEzNS4xMzUiLCJuYW1lIjoiU2VydmljZSBNWCBEYXRhbGFrZSIsIm9pZCI6ImJhMTYwYTE0LTBjYzgtNDBjNy05ZjhiLTRkNTYyOTk5ZTlmNSIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMDEwOTE1ODAyLTQyMjM0Nzk1MjEtOTczMzI5NTMwLTExNTczIiwicmgiOiIwLkFRb0FsaF82bDNkNG4wYXFOeC1GYU9Pal96VnFySmxHcllOQ2hWVkRxVXFtU1ZNS0FGby4iLCJzdWIiOiJuZVFGQjV3blg2MWNqRmdmYktPbEdTQ0MyWE03ZzNIcFZtVGxNSzNZV3pnIiwidGlkIjoiOTdmYTFmOTYtNzg3Ny00NjlmLWFhMzctMWY4NTY4ZTNhM2ZmIiwidW5pcXVlX25hbWUiOiJzdmMubXhkYXRhbGFrZUBjb21wYXNzby5jb20uYnIiLCJ1cG4iOiJzdmMubXhkYXRhbGFrZUBjb21wYXNzby5jb20uYnIiLCJ2ZXIiOiIxLjAifQ."
     }""")
 
-    assert authToken == getToken(
+    assert authToken == auth.getToken(
         client_id='xxx',
         client_secret='yyy',
         username='username@mail.com',
@@ -27,7 +46,7 @@ def test_auth(requests_mock):
 
 
 def test_auth_password_incorrect(requests_mock):
-    requests_mock.post('https://login.microsoftonline.com/common/oauth2/token', text="""{
+    requests_mock.post(urlMock, text="""{
     "error": "invalid_grant",
     "error_description": "AADSTS50126: Error validating credentials due to invalid username or password.\\r\\nTrace ID: 8adc5510-13ac-464d-902f-7e20ce9c8e01\\r\\nCorrelation ID: 5e437e0a-6a78-4a52-b9cf-5ccc7a354561\\r\\nTimestamp: 2021-07-05 13:20:07Z",
     "error_codes": [
@@ -40,7 +59,7 @@ def test_auth_password_incorrect(requests_mock):
 }""", status_code=400)
 
     with pytest.raises(Exception) as excinfo:
-        getToken(
+        auth.getToken(
             client_id='xxx',
             client_secret='yyy',
             username='username@mail.com',
@@ -53,7 +72,7 @@ def test_auth_password_incorrect(requests_mock):
 
 
 def test_auth_username_incorrect(requests_mock):
-    requests_mock.post('https://login.microsoftonline.com/common/oauth2/token', text="""{
+    requests_mock.post(urlMock, text="""{
     "error": "invalid_request",
     "error_description": "AADSTS50059: No tenant-identifying information found in either the request or implied by any provided credentials.\\r\\nTrace ID: f4f34ca7-b508-44fe-adfb-3a7eda502401\\r\\nCorrelation ID: e248f8ed-a938-4adc-acd9-f9364c418a65\\r\\nTimestamp: 2021-07-05 13:50:01Z",
     "error_codes": [
@@ -65,7 +84,7 @@ def test_auth_username_incorrect(requests_mock):
 }""", status_code=400)
 
     with pytest.raises(Exception) as excinfo:
-        getToken(
+        auth.getToken(
             client_id='xxx',
             client_secret='yyy',
             username='username@mail.com',
@@ -79,7 +98,7 @@ def test_auth_username_incorrect(requests_mock):
 
 
 def test_auth_client_id_incorrect(requests_mock):
-    requests_mock.post('https://login.microsoftonline.com/common/oauth2/token', text="""{
+    requests_mock.post(urlMock, text="""{
     "error": "unauthorized_client",
     "error_description": "AADSTS700016: Application with identifier 'xxx' was not found in the directory 'tenant.com.br'. This can happen if the application has not been installed by the administrator of the tenant or consented to by any user in the tenant. You may have sent your authentication request to the wrong tenant.\\r\\nTrace ID: eee1763c-c602-405a-a6b4-5cb8e5ca2301\\r\\nCorrelation ID: 26c0174a-6457-4331-9bd1-d7f55c5257e8\\r\\nTimestamp: 2021-07-05 13:52:44Z",
     "error_codes": [
@@ -92,7 +111,7 @@ def test_auth_client_id_incorrect(requests_mock):
 }""", status_code=400)
 
     with pytest.raises(Exception) as excinfo:
-        getToken(
+        auth.getToken(
             client_id='xxx',
             client_secret='yyy',
             username='username@mail.com',
@@ -108,7 +127,7 @@ def test_auth_client_id_incorrect(requests_mock):
 
 
 def test_auth_secret_id_incorrect(requests_mock):
-    requests_mock.post('https://login.microsoftonline.com/common/oauth2/token', text="""{
+    requests_mock.post(urlMock, text="""{
     "error": "invalid_client",
     "error_description": "AADSTS7000215: Invalid client secret is provided.\\r\\nTrace ID: 01a61b09-ff85-4056-8775-975a5dc7b501\\r\\nCorrelation ID: 52ac6351-fc6f-409b-8a3f-866b0b3004db\\r\\nTimestamp: 2021-07-05 13:55:20Z",
     "error_codes": [
@@ -121,7 +140,7 @@ def test_auth_secret_id_incorrect(requests_mock):
 }""", status_code=401)
 
     with pytest.raises(Exception) as excinfo:
-        getToken(
+        auth.getToken(
             client_id='xxx',
             client_secret='yyy',
             username='username@mail.com',
