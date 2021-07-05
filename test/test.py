@@ -6,9 +6,9 @@ docker_image = 'bitbucketpipelines/demo-pipe-python:ci' + os.getenv('BITBUCKET_B
 
 def docker_build():
     """
-  Build the docker image for tests.
-  :return:
-  """
+    Build the docker image for tests.
+    :return:
+    """
     args = [
         'docker',
         'build',
