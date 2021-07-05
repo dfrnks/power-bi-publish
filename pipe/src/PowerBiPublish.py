@@ -1,6 +1,6 @@
-import os
+import os, requests, time
 from bitbucket_pipes_toolkit import Pipe, get_logger
-from .api import auth, groups
+from .api import auth, groups, imports
 
 logger = get_logger()
 
@@ -69,6 +69,7 @@ class PowerBiPublishPipe(Pipe):
         self.configurePermissions(workspaceId=workspaceId, permissions=permissions)
 
         # Publish all .pbix
+        self.importAllPbix(workspaceId=workspaceId, directoryPbix=directoryPbix)
 
         # Update parameters
 
@@ -77,9 +78,6 @@ class PowerBiPublishPipe(Pipe):
         # Configure Data Source
 
         # Update Report
-
-        # dirs = os.listdir(directoryPbix)
-        # print(dirs)
 
         # logger.error('Executing the Power BI pipe...')
         # logger.info('Executing the Power BI pipe...')
@@ -139,5 +137,30 @@ class PowerBiPublishPipe(Pipe):
                 groupId=workspaceId,
                 user=user
             )
+
+        return True
+
+    def importAllPbix(self, workspaceId: str, directoryPbix: str) -> bool:
+        for file in os.listdir(directoryPbix):
+            file = open(directoryPbix + "/" + file, 'rb')
+            fileName = os.path.basename(file.name)
+
+            importId = imports.upload(
+                accessToken=self.accessToken,
+                groupId=workspaceId,
+                fileName=fileName,
+                file=file
+            )
+
+            importState = "Started"
+            while importState != "Succeeded":
+                try:
+                    result = imports.getImport(accessToken=self.accessToken, groupId=workspaceId, importId=importId)
+
+                    importState = result["importState"]
+
+                    time.sleep(1)
+                except requests.exceptions.ConnectionError as e:
+                    logging.error(e)
 
         return True
