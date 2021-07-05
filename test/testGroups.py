@@ -7,14 +7,10 @@ urlGroups = "https://api.powerbi.com/v1.0/myorg/groups"
 
 def testCreateWorkspace(requests_mock):
     requests_mock.post(urlGroups + "?workspaceV2=True", status_code=200, text="""{
-  "value": [
-    {
       "id": "f089354e-8366-4e18-aea3-4cb4a3a50b48",
       "isOnDedicatedCapacity": false,
       "name": "sample workspace V2"
-    }
-  ]
-}""")
+  }""")
 
     assert "f089354e-8366-4e18-aea3-4cb4a3a50b48" == groups.createGroup(
         accessToken='xxx',
@@ -117,7 +113,8 @@ def testChangeUserGroup(requests_mock):
         accessToken='xxx-yy-xxx',
         groupId='yyy',
         identifier='john@contoso.com',
-        groupUserAccessRight='Viewer'
+        groupUserAccessRight='Viewer',
+        principalType="User"
     )
 
     assert response

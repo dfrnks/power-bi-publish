@@ -129,7 +129,8 @@ class PowerBiPublishPipe(Pipe):
                     accessToken=self.accessToken,
                     groupId=workspaceId,
                     identifier=user[0],
-                    groupUserAccessRight=user[1]
+                    groupUserAccessRight=user[1],
+                    principalType="User"
                 )
 
         for user in usersRemove:

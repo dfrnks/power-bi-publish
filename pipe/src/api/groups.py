@@ -1,4 +1,7 @@
-import requests
+import requests, json
+from bitbucket_pipes_toolkit import get_logger
+
+logger = get_logger()
 
 
 def createGroup(accessToken: str, name: str) -> str:
@@ -18,13 +21,17 @@ def createGroup(accessToken: str, name: str) -> str:
         'name': name,
     }
 
-    response = requests.post(url, data=payload, headers=headers)
+    response = requests.post(url, data=json.dumps(payload), headers=headers)
 
     if response.status_code == 200:
-        return response.json()["value"][0]["id"]
+        logger.debug(response.json())
+
+        return response.json()["id"]
 
     if response.status_code == 403:
         raise Exception("Token expired or invalid!")
+
+    logger.error(response.text)
 
     raise Exception("Unable to create workspace!")
 
@@ -46,10 +53,14 @@ def getAllGroups(accessToken: str) -> list:
     )
 
     if response.status_code == 200:
+        logger.debug(response.json())
+
         return response.json()["value"]
 
     if response.status_code == 403:
         raise Exception("Token expired or invalid!")
+
+    logger.error(response.text)
 
     raise Exception("Unable to get the workspaces!")
 
@@ -72,10 +83,14 @@ def getUsersGroup(accessToken:str, groupId: str) -> list:
     response = requests.get(url=url, headers=headers)
 
     if response.status_code == 200:
-        return response["value"]
+        logger.debug(response.json())
+
+        return response.json()["value"]
 
     if response.status_code == 403:
         raise Exception("Token expired or invalid!")
+
+    logger.error(response.text)
 
     raise Exception("Unable to get users of workspaces!")
 
@@ -99,26 +114,32 @@ def addUserGroup(accessToken: str, groupId: str, identifier: str, groupUserAcces
 
     payload = {
         "identifier": identifier,
+        "emailAddress": identifier,
         "groupUserAccessRight": groupUserAccessRight,
     }
 
-    response = requests.post(url=url, headers=headers, data=payload)
+    response = requests.post(url=url, headers=headers, data=json.dumps(payload))
 
-    if response.status_code == 200 and response.json()["emailAddress"] == identifier:
+    logger.debug(response.text)
+
+    if response.status_code == 200:
         return True
 
     if response.status_code == 403:
         raise Exception("Token expired or invalid!")
 
+    logger.error(response.text)
+
     raise Exception("Unable to add user to workspaces!")
 
 
-def changeUserGroup(accessToken: str, groupId: str, identifier: str, groupUserAccessRight: str) -> bool:
+def changeUserGroup(accessToken: str, groupId: str, identifier: str, groupUserAccessRight: str, principalType: str) -> bool:
     """
     :param accessToken: The Access token
     :param groupId: The workspace id
     :param identifier: The ID/Email of the user
     :param groupUserAccessRight: Access rights user has for the workspace https://docs.microsoft.com/en-us/rest/api/power-bi/groups/addgroupuser#groupuseraccessright
+    :param principalType: The principal type https://docs.microsoft.com/en-us/rest/api/power-bi/groups/addgroupuser#principaltype
     """
 
     url = "https://api.powerbi.com/v1.0/myorg/groups/{groupId}/users".format(groupId=groupId)
@@ -131,15 +152,18 @@ def changeUserGroup(accessToken: str, groupId: str, identifier: str, groupUserAc
     payload = {
         "identifier": identifier,
         "groupUserAccessRight": groupUserAccessRight,
+        "principalType": principalType
     }
 
-    response = requests.put(url=url, headers=headers, data=payload)
+    response = requests.put(url=url, headers=headers, data=json.dumps(payload))
 
     if response.status_code == 200:
         return True
 
     if response.status_code == 403:
         raise Exception("Token expired or invalid!")
+
+    logger.error(response.text)
 
     raise Exception("Unable to change user to workspaces!")
 
@@ -164,6 +188,8 @@ def deleteUserGroup(accessToken: str, groupId: str, user: str) -> bool:
 
     if response.status_code == 403:
         raise Exception("Token expired or invalid!")
+
+    logger.error(response.text)
 
     raise Exception("Unable to delete user to workspaces!")
 
