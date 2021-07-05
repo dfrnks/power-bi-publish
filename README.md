@@ -36,9 +36,9 @@ Add the following snippet to the script section of your `bitbucket-pipelines.yml
 | WORKSPACE (*)         | The name of Power BI Service Workspace |
 | DIRECTORY_PBIX (*)    | The directory that contain the .pbix files |
 | GATEWAY               | The name of the gateway and data source |
-| PERMISSION_0          | The firts permission key:value |
-| PERMISSION_1          | The secondy permission key:value |
-| PERMISSION_n          | The n permissions key:value |
+| PERMISSION_0          | The firts permission identifier:groupUserAccessRight |
+| PERMISSION_1          | The secondy permission identifier:groupUserAccessRight |
+| PERMISSION_n          | The n permissions identifier:groupUserAccessRight |
 | PERMISSION_COUNT      | The quantity of permissions |
 | PARAMETER_0           | The firts parameter key:value |
 | PARAMETER_1           | The secondy parameter key:value |

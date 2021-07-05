@@ -33,11 +33,11 @@ class PowerBiPublishPipe(Pipe):
 
         permissions = []
         for n in range(len(permission)):
-            permissions.append(permission[n])
+            permissions.append(str(permission[n]).split(":"))
 
         parameters = []
         for n in range(len(parameter)):
-            parameters.append(parameter[n])
+            parameters.append(str(parameter[n]).split(":"))
 
         logger.debug('Username: {}'.format(username))
         logger.debug('Password: {}'.format(password))
@@ -63,11 +63,10 @@ class PowerBiPublishPipe(Pipe):
         )
 
         # Create Workspace
-        if not createWorkspace(workspace=workspace):
-            self.fail(message="Unable to create workspace!")
-
+        workspaceId = self.createWorkspace(workspace=workspace)
 
         # Configure permissions
+        self.configurePermissions(workspaceId=workspaceId, permissions=permissions)
 
         # Publish all .pbix
 
@@ -89,17 +88,55 @@ class PowerBiPublishPipe(Pipe):
 
         self.success(message="Execution with success!")
 
-    def createWorkspace(self, workspace:str) -> bool:
+    def createWorkspace(self, workspace: str) -> str:
+        """
+        :param workspace
+        """
         workspaces = groups.getAllGroups(accessToken=self.accessToken)
 
-        exist = False
         for group in workspaces:
             if workspace == group['name']:
-                exist = True
-                break
+                return group['id']
 
-        if not exist:
-            return groups.createGroup(accessToken=self.accessToken, name=workspace)
+        return groups.createGroup(accessToken=self.accessToken, name=workspace)
+
+    def configurePermissions(self, workspaceId: str, permissions: list) -> bool:
+        """
+        :param workspaceId
+        :param permissions
+        """
+        users = groups.getUsersGroup(accessToken=self.accessToken, groupId=workspaceId)
+
+        users = {val['identifier']: val['groupUserAccessRight'] for val in users}
+        usersAdd = {val[0]: val[1] for val in permissions}
+        usersRemove = []
+
+        for key in users.keys():
+            if not key in usersAdd:
+                usersRemove.append(key)
+
+        for user in permissions:
+            if user[0] not in users:
+                groups.addUserGroup(
+                    accessToken=self.accessToken,
+                    groupId=workspaceId,
+                    identifier=user[0],
+                    groupUserAccessRight=user[1]
+                )
+
+            if user[1] != users.get(user[0]):
+                groups.changeUserGroup(
+                    accessToken=self.accessToken,
+                    groupId=workspaceId,
+                    identifier=user[0],
+                    groupUserAccessRight=user[1]
+                )
+
+        for user in usersRemove:
+            groups.deleteUserGroup(
+                accessToken=self.accessToken,
+                groupId=workspaceId,
+                user=user
+            )
 
         return True
-

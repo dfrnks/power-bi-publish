@@ -2,12 +2,11 @@ import pytest
 from pipe.src.api import groups
 
 
-urlCreateWorkspaceMock = "https://api.powerbi.com/v1.0/myorg/groups?workspaceV2=True"
-urlGetWorkspacesMock = "https://api.powerbi.com/v1.0/myorg/groups"
+urlGroups = "https://api.powerbi.com/v1.0/myorg/groups"
 
 
 def testCreateWorkspace(requests_mock):
-    requests_mock.post(urlCreateWorkspaceMock, status_code=200, text="""{
+    requests_mock.post(urlGroups + "?workspaceV2=True", status_code=200, text="""{
   "value": [
     {
       "id": "f089354e-8366-4e18-aea3-4cb4a3a50b48",
@@ -17,14 +16,14 @@ def testCreateWorkspace(requests_mock):
   ]
 }""")
 
-    assert groups.createGroup(
+    assert "f089354e-8366-4e18-aea3-4cb4a3a50b48" == groups.createGroup(
         accessToken='xxx',
         name='sample workspace V2'
     )
 
 
 def testCreateWorkspaceInvalid(requests_mock):
-    requests_mock.post(urlCreateWorkspaceMock, status_code=500, text="""{
+    requests_mock.post(urlGroups + "?workspaceV2=True", status_code=500, text="""{
   "value": [
     {
       "id": "f089354e-8366-4e18-aea3-4cb4a3a50b48",
@@ -44,7 +43,7 @@ def testCreateWorkspaceInvalid(requests_mock):
 
 
 def testCreateWorkspaceTokenExpired(requests_mock):
-    requests_mock.post(urlCreateWorkspaceMock, status_code=403, text="""""")
+    requests_mock.post(urlGroups + "?workspaceV2=True", status_code=403, text="""""")
 
     with pytest.raises(Exception) as excinfo:
         groups.createGroup(
@@ -56,7 +55,7 @@ def testCreateWorkspaceTokenExpired(requests_mock):
 
 
 def testGetWorkspacesTokenExpired(requests_mock):
-    requests_mock.get(urlGetWorkspacesMock, status_code=403, text="""""")
+    requests_mock.get(urlGroups, status_code=403, text="""""")
 
     with pytest.raises(Exception) as excinfo:
         groups.getAllGroups(
@@ -66,8 +65,8 @@ def testGetWorkspacesTokenExpired(requests_mock):
     assert str(excinfo.value) == 'Token expired or invalid!'
 
 
-def testGetWorkspaces(requests_mock):
-    requests_mock.get(urlGetWorkspacesMock, status_code=200, text="""{
+def testGetAllGroups(requests_mock):
+    requests_mock.get(urlGroups, status_code=200, text="""{
   "value": [
     {
       "id": "3d9b93c6-7b6d-4801-a491-1738910904fd",
@@ -90,3 +89,51 @@ def testGetWorkspaces(requests_mock):
     assert len(response) == 2
     assert "marketing group" == response[0]["name"]
     assert "contoso" == response[1]["name"]
+
+
+def testAddUsersGroup(requests_mock):
+    requests_mock.post(urlGroups + "/{groupId}/users".format(groupId='yyy'), status_code=200, text="""{
+  "emailAddress": "john@contoso.com",
+  "groupUserAccessRight": "Admin"
+}""")
+
+    response = groups.addUserGroup(
+        accessToken='xxx-yy-xxx',
+        groupId='yyy',
+        identifier='john@contoso.com',
+        groupUserAccessRight='Admin'
+    )
+
+    assert response
+
+
+def testChangeUserGroup(requests_mock):
+    requests_mock.put(urlGroups + "/{groupId}/users".format(groupId='yyy'), status_code=200, text="""{
+  "emailAddress": "john@contoso.com",
+  "groupUserAccessRight": "Viewer"
+}""")
+
+    response = groups.changeUserGroup(
+        accessToken='xxx-yy-xxx',
+        groupId='yyy',
+        identifier='john@contoso.com',
+        groupUserAccessRight='Viewer'
+    )
+
+    assert response
+
+
+def testDeleteUserGroup(requests_mock):
+    requests_mock.delete(
+        urlGroups + "/{groupId}/users/{user}".format(groupId='yyy', user="john@contoso.com"),
+        status_code=200,
+        text="""""")
+
+    response = groups.deleteUserGroup(
+        accessToken='xxx-yy-xxx',
+        groupId='yyy',
+        user='john@contoso.com'
+    )
+
+    assert response
+
