@@ -1,6 +1,6 @@
 import os, requests, time
 from bitbucket_pipes_toolkit import Pipe, get_logger
-from .api import auth, groups, imports
+from .api import auth, groups, imports, datasets
 
 logger = get_logger()
 
@@ -12,7 +12,6 @@ class PowerBiPublishPipe(Pipe):
     Configure permissions
     Publish all .pbix
     Update parameters
-    Configure Gateway
     Configure Data Source
     Update Report
     """
@@ -69,20 +68,10 @@ class PowerBiPublishPipe(Pipe):
         self.configurePermissions(workspaceId=workspaceId, permissions=permissions)
 
         # Publish all .pbix
-        self.importAllPbix(workspaceId=workspaceId, directoryPbix=directoryPbix)
-
         # Update parameters
-
-        # Configure Gateway
-
         # Configure Data Source
-
         # Update Report
-
-        # logger.error('Executing the Power BI pipe...')
-        # logger.info('Executing the Power BI pipe...')
-        #
-        # print('Hello Pipes')
+        datasetIds = self.importAllPbix(workspaceId=workspaceId, directoryPbix=directoryPbix, parameters=parameters)
 
         self.success(message="Execution with success!")
 
@@ -140,17 +129,22 @@ class PowerBiPublishPipe(Pipe):
 
         return True
 
-    def importAllPbix(self, workspaceId: str, directoryPbix: str) -> bool:
+    def importAllPbix(self, workspaceId: str, directoryPbix: str, parameters: list) -> list:
+        datasetIds = []
+
         for file in os.listdir(directoryPbix):
             file = open(directoryPbix + "/" + file, 'rb')
             fileName = os.path.basename(file.name)
 
+            # Publish all .pbix
             importId = imports.upload(
                 accessToken=self.accessToken,
                 groupId=workspaceId,
                 fileName=fileName,
                 file=file
             )
+
+            result = []
 
             importState = "Started"
             while importState != "Succeeded":
@@ -161,6 +155,29 @@ class PowerBiPublishPipe(Pipe):
 
                     time.sleep(1)
                 except requests.exceptions.ConnectionError as e:
-                    logging.error(e)
+                    logger.error(e)
 
-        return True
+            datasetId = result["datasets"][0]["id"]
+            reportid = result["reports"][0]["id"]
+
+            datasetIds.append(datasetId)
+
+            if len(parameters) > 0:
+                # Update parameters
+                datasets.updateParameters(
+                    accessToken=self.accessToken,
+                    groupId=workspaceId,
+                    datasetId=datasetId,
+                    parameters=parameters
+                )
+
+            # Configure Data Source
+
+            # Update Report
+            datasets.forceRefresh(
+                accessToken=self.accessToken,
+                groupId=workspaceId,
+                datasetId=datasetId
+            )
+
+        return datasetIds
