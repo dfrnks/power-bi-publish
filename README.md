@@ -17,6 +17,9 @@ Add the following snippet to the script section of your `bitbucket-pipelines.yml
     WORKSPACE: "<string>"
     DIRECTORY_PBIX: "<string>"
     # GATEWAY: "<string>" # Optional
+    # PERMISSION_0: "<string>" # Optional
+    # PERMISSION_1: "<string>" # Optional
+    # PERMISSION_COUNT: "<string>" # Optional
     # PARAMETER_0: "<string>" # Optional
     # PARAMETER_1: "<string>" # Optional
     # PARAMETER_COUNT: "<string>" # Optional
@@ -33,9 +36,13 @@ Add the following snippet to the script section of your `bitbucket-pipelines.yml
 | WORKSPACE (*)         | The name of Power BI Service Workspace |
 | DIRECTORY_PBIX (*)    | The directory that contain the .pbix files |
 | GATEWAY               | The name of the gateway and data source |
+| PERMISSION_0          | The firts permission key:value |
+| PERMISSION_1          | The secondy permission key:value |
+| PERMISSION_n          | The n permissions key:value |
+| PERMISSION_COUNT      | The quantity of permissions |
 | PARAMETER_0           | The firts parameter key:value |
 | PARAMETER_1           | The secondy parameter key:value |
-| PARAMETER_n           | The n parameter key:value |
+| PARAMETER_n           | The n parameters key:value |
 | PARAMETER_COUNT       | The quantity of parameters |
 | DEBUG                 | Turn on extra debug information. Default: `false`. |
 
@@ -58,6 +65,9 @@ script:
       WORKSPACE: "The My Workspace"
       DIRECTORY_PBIX: "workspaces/the_my_workspace"
       GATEWAY: "My Gateway:My Data Source"
+      PERMISSION_0: "jp@mail.com:Admin"
+      PERMISSION_1: "olv@mail.com:Viewer"
+      PERMISSION_COUNT: "2"
       PARAMETER_0: "dsn:dsn=Simba Athena"
       PARAMETER_1: "Schema:default"
       PARAMETER_COUNT: "2"
@@ -76,6 +86,9 @@ script:
       WORKSPACE: "The My Workspace"
       DIRECTORY_PBIX: "workspaces/the_my_workspace"
       GATEWAY: "My Gateway:My Data Source"
+      PERMISSION_0: "jp@mail.com:Admin"
+      PERMISSION_1: "olv@mail.com:Viewer"
+      PERMISSION_COUNT: "2"
       PARAMETER_0: "dsn:dsn=Simba Athena"
       PARAMETER_1: "Schema:default"
       PARAMETER_COUNT: "2"

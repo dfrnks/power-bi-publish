@@ -11,6 +11,7 @@ schema = {
   'WORKSPACE': {'type': 'string', 'required': True},
   'DIRECTORY_PBIX': {'type': 'string', 'required': True},
   'GATEWAY': {'type': 'string', 'required': False, 'default': ''},
+  'PERMISSION': {'type': 'list', 'required': False, 'default': ''},
   'PARAMETER': {'type': 'list', 'required': False, 'default': ''},
   'DEBUG': {'type': 'boolean', 'required': False, 'default': False}
 }
