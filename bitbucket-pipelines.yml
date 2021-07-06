@@ -5,8 +5,8 @@ test: &test
   step:
     name: Test
     script:
-    - pip install -r test/requirements.txt
-    - pytest -v test/test.py
+    - pip install -r requirements.txt -r test/requirements.txt
+    - pytest -v test/*
     services:
     - docker
 
