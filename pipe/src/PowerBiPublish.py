@@ -1,20 +1,11 @@
 import os, requests, time
 from bitbucket_pipes_toolkit import Pipe, get_logger
-from .api import auth, groups, imports, datasets
+from .api import auth, groups, imports, datasets, gateways
 
 logger = get_logger()
 
 
 class PowerBiPublishPipe(Pipe):
-    """
-    Create Access Token
-    Create Workspace
-    Configure permissions
-    Publish all .pbix
-    Update parameters
-    Configure Data Source
-    Update Report
-    """
     accessToken: str
 
     def run(self):
@@ -29,6 +20,7 @@ class PowerBiPublishPipe(Pipe):
         directoryPbix = self.get_variable('DIRECTORY_PBIX')
         gateway = self.get_variable('GATEWAY')
         parameter = self.get_variable('PARAMETER')
+        wait = self.get_variable('WAIT')
 
         permissions = []
         for n in range(len(permission)):
@@ -71,7 +63,32 @@ class PowerBiPublishPipe(Pipe):
         # Update parameters
         # Configure Data Source
         # Update Report
-        datasetIds = self.importAllPbix(workspaceId=workspaceId, directoryPbix=directoryPbix, parameters=parameters)
+        datasetIds = self.importAllPbix(
+            workspaceId=workspaceId,
+            directoryPbix=directoryPbix,
+            parameters=parameters,
+            gateway=gateway
+        )
+
+        # Check the update of all reports
+        if wait:
+            for datasetId in datasetIds:
+                status = "Unknown"
+                while status != "Completed":
+                    try:
+                        result = datasets.getRefreshes(groupId=workspaceId, datasetId=datasetId, top=1)
+
+                        status = result["value"][0]["status"]
+
+                        if status == "Failed":
+                            logger.error("Not possible to update the dataset with id {}. "
+                                         "Check the reason in the Power BI Service.".format(datasetId))
+                            break
+
+                        if status != "Completed":
+                            time.sleep(5)
+                    except requests.exceptions.ConnectionError as e:
+                        logger.error(e)
 
         self.success(message="Execution with success!")
 
@@ -129,7 +146,7 @@ class PowerBiPublishPipe(Pipe):
 
         return True
 
-    def importAllPbix(self, workspaceId: str, directoryPbix: str, parameters: list) -> list:
+    def importAllPbix(self, workspaceId: str, directoryPbix: str, parameters: list, gateway: str) -> list:
         datasetIds = []
 
         for file in os.listdir(directoryPbix):
@@ -158,7 +175,6 @@ class PowerBiPublishPipe(Pipe):
                     logger.error(e)
 
             datasetId = result["datasets"][0]["id"]
-            reportid = result["reports"][0]["id"]
 
             datasetIds.append(datasetId)
 
@@ -172,6 +188,23 @@ class PowerBiPublishPipe(Pipe):
                 )
 
             # Configure Data Source
+            datasources = datasets.getDatasources(
+                accessToken=self.accessToken,
+                groupId=workspaceId,
+                datasetId=datasetId
+            )
+
+            if len(datasources) == 0:
+                raise Exception("Not found any Data Sources, check the configuration of the gateway!")
+
+            # In this moment check just the first Data Source
+            if "datasourceId" not in result[0] or "gatewayId" not in result[0]:
+                if not self.bindDatasourceToGatewayDatasource(
+                    workspaceId=workspaceId,
+                    datasetId=datasetId,
+                    gateway=gateway
+                ):
+                    logger.error("Not possible bind the gateway to data source, check the configurations!")
 
             # Update Report
             datasets.forceRefresh(
@@ -181,3 +214,44 @@ class PowerBiPublishPipe(Pipe):
             )
 
         return datasetIds
+
+    def bindDatasourceToGatewayDatasource(self, gateway: str, workspaceId: str, datasetId: str) -> bool:
+        discoveredGateways = datasets.discoverGateways(
+            accessToken=self.accessToken,
+            groupId=workspaceId,
+            datasetId=datasetId
+        )
+
+        gateway = gateway.split(":")
+
+        if len(gateway) < 2:
+            raise Exception("The gateway parameter are incorrect, please informe 'Gateway Name:Data Source Name'")
+
+        gatewayName = gateway[0]
+        datasourceName = gateway[1]
+
+        gatewayId = None
+        for gateway in discoveredGateways:
+            if gateway["name"] == gatewayName:
+                gatewayId = gateway["id"]
+
+        if gatewayId is None:
+            raise Exception("Gateway '{}' not found!".format(gatewayName))
+
+        datasources = gateways.getDatasources(accessToken=self.accessToken, gatewayId=gatewayId)
+
+        datasourceId = None
+        for datasource in datasources:
+            if datasource["datasourceName"] == datasourceName:
+                datasourceId = datasource["id"]
+
+        if datasourceId is None:
+            raise Exception("Datasource '{}' not found! ".format(datasourceName))
+
+        return datasets.bindDatasourceToGatewayDatasource(
+            accessToken=self.accessToken,
+            groupId=workspaceId,
+            datasetId=datasetId,
+            gatewayId=gatewayId,
+            datasourceId=datasourceId
+        )

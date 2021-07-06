@@ -23,6 +23,7 @@ Add the following snippet to the script section of your `bitbucket-pipelines.yml
     # PARAMETER_0: "<string>" # Optional
     # PARAMETER_1: "<string>" # Optional
     # PARAMETER_COUNT: "<string>" # Optional
+    # WAIT: "<boolean>" # Optional
     # DEBUG: "<boolean>" # Optional
 ```
 ## Variables
@@ -44,6 +45,7 @@ Add the following snippet to the script section of your `bitbucket-pipelines.yml
 | PARAMETER_1           | The secondy parameter key:value |
 | PARAMETER_n           | The n parameters key:value |
 | PARAMETER_COUNT       | The quantity of parameters |
+| WAIT                  | Waiting the update of all reports. Default: `false`. |
 | DEBUG                 | Turn on extra debug information. Default: `false`. |
 
 _(*) = required variable._
@@ -92,6 +94,7 @@ script:
       PARAMETER_0: "dsn:dsn=Simba Athena"
       PARAMETER_1: "Schema:default"
       PARAMETER_COUNT: "2"
+      WAIT: "true"
       DEBUG: "true"
 ```
 
