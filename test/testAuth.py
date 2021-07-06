@@ -5,24 +5,9 @@ urlMock = 'https://login.microsoftonline.com/common/oauth2/token'
 
 
 def test_auth(requests_mock):
-    authToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Im5PbzNaRHJPRFhFSzFqS1doWHNsSFJfS1hFZyIsImtpZCI6Im5PbzNa' \
-                'RHJPRFhFSzFqS1doWHNsSFJfS1hFZyJ9.eyJhdWQiOiJodHRwczovL2FuYWx5c2lzLndpbmRvd3MubmV0L3Bvd2VyYmkvYXBpIiw' \
-                'iaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvOTdmYTFmOTYtNzg3Ny00NjlmLWFhMzctMWY4NTY4ZTNhM2ZmLyIsImlhdCI' \
-                '6MTYyNTQ4NzYxNiwibmJmIjoxNjI1NDg3NjE2LCJleHAiOjE2MjU0OTE1MTYsImFjY3QiOjAsImFjciI6IjEiLCJhaW8iOiJFMlp' \
-                'nWVBpaHArKzI2M1Bnc243bCtwUHpiUnc4dWRKMmFFM0xmU3o4TWpuL2o4cXo5NVVBIiwiYW1yIjpbInB3ZCJdLCJhcHBpZCI6Ijk' \
-                '5YWM2YTM1LWFkNDYtNDI4My04NTU1LTQzYTk0YWE2NDk1MyIsImFwcGlkYWNyIjoiMSIsImZhbWlseV9uYW1lIjoiTVggRGF0YWx' \
-                'ha2UiLCJnaXZlbl9uYW1lIjoiU2VydmljZSIsImlwYWRkciI6IjE3OS4xMjcuMTM1LjEzNSIsIm5hbWUiOiJTZXJ2aWNlIE1YIER' \
-                'hdGFsYWtlIiwib2lkIjoiYmExNjBhMTQtMGNjOC00MGM3LTlmOGItNGQ1NjI5OTllOWY1Iiwib25wcmVtX3NpZCI6IlMtMS01LTI' \
-                'xLTIwMTA5MTU4MDItNDIyMzQ3OTUyMS05NzMzMjk1MzAtMTE1NzMiLCJwdWlkIjoiMTAwMzIwMDEzOEJCMkMwNSIsInJoIjoiMC5' \
-                'BUW9BbGhfNmwzZDRuMGFxTngtRmFPT2pfelZxckpsR3JZTkNoVlZEcVVxbVNWTUtBRm8uIiwic2NwIjoiRGF0YXNldC5SZWFkLkF' \
-                'sbCBEYXRhc2V0LlJlYWRXcml0ZS5BbGwgV29ya3NwYWNlLlJlYWRXcml0ZS5BbGwiLCJzdWIiOiJ5S0JOSUl1R0NoMjI4TnVELTF' \
-                'DR0JhWlZWUTdoLTBQRWYtX1NRVDhySU9BIiwidGlkIjoiOTdmYTFmOTYtNzg3Ny00NjlmLWFhMzctMWY4NTY4ZTNhM2ZmIiwidW5' \
-                'pcXVlX25hbWUiOiJzdmMubXhkYXRhbGFrZUBjb21wYXNzby5jb20uYnIiLCJ1cG4iOiJzdmMubXhkYXRhbGFrZUBjb21wYXNzby5' \
-                'jb20uYnIiLCJ1dGkiOiJDUnVtQVlYX1ZrQ0hkWmRhelRPd0FRIiwidmVyIjoiMS4wIiwid2lkcyI6WyJiNzlmYmY0ZC0zZWY5LTQ' \
-                '2ODktODE0My03NmIxOTRlODU1MDkiXX0.fF3Yqcp2zK76AbLk0mprwOsiuz2g5KZTqvl1xktS5NjugdxCccJZ02UiXXwINg0UA6F' \
-                'QWPCmdOonfg4-2WegmO3Zmb6dgaJkGAt6Aqz8PIRnA_hlp_nap_LYRjS3a909lmQV95asONb4_kW_qsPbc-yDfvYA6i4iJVjj52L' \
-                'vSLrIL0LTRMgqM68K10wA4pcw33iXDD4iq_drqWrd6Ig55JIioqS2hOG8kkCwDJFP4L6MaS3ElsEmruPF0TAmiNs9v_22XFLRxzk' \
-                '8qDruAOAn__bwXQsT8SZYW3EHYnbWDbNR0grUV_RiEyHAJnBr_uDcElQLE8OJGXlLXFSnvZbncg'
+    authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9' \
+                '.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ' \
+                '.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c '
 
     requests_mock.post(urlMock, text="""{
     "token_type": "Bearer",
@@ -33,8 +18,8 @@ def test_auth(requests_mock):
     "not_before": "1625487616",
     "resource": "https://analysis.windows.net/powerbi/api",
     "access_token": \"""" + authToken + """\",
-    "refresh_token": "0.AQoAlh_6l3d4n0aqNx-FaOOj_zVqrJlGrYNChVVDqUqmSVMKAFo.AgABAAAAAAD--DLA3VO7QrddgJg7WevrAgDs_wQA9P-cUOr6p5O7tIkMLtAzo-KbZDQVk_-w-HxmSRQkPBHJc2SR_cpRFbSwFUfCPv87JUuMDV1zErm_0Kp1ZZPCQ0HIgta2zNykx-_PhLTFv6GX34sgTOHWQGURVxUghsg8QTLk2I629jUYMRi7os78bWOkl9hY6KBY9hB9JSE1_9G2O83q31dg0IF1E3vwWsBf_mpSEGejkUHp8edceSLKTLqXRA5P21oldPdz3PMe_kAT14eyjbtj5C-V-SQyYz-FXQCqu9KvuLUsCG6vlj_6Pc9DlzE84ipdH3i9P-QY9jjvJo2SyzM15lmj6AqlMjA6nYfgAtguUS1iXRAVQnP6LynuQY8esOW4U7ksL0QRKRXynn9PxctVG6TLiXxrwvnQ67H8v9lATGghlvRdODF_XW0UwK8TBGi7BQtOvk5mxUAGGy8TaaxerGouPPYECdp5-YU7ck7DK2Z4FgiqkVdRONL84hgjZoLGF7stFArMon_1Cuhux0lmMrg5QXmqhohyJVl02571fj0F64FcFcphrB1TXnlewqhRK0FU4uUqgW3WttWMUHm7Z-Y2Xf2X5qHFn4_U7SWyhdXSI_cUyeOGA5tRodsx1vzqJRR17TkaJWyIwH-hAVoHHVLVjfEhdpJSHAEbMHKAhz9UgLuq89CgNHUPV_scyGFXmFWA-x_mMrc5yfMMZ-NISkZJXbOdcfo50yT01sMTQnpEUtxZZVEhpF0Xy8NSi1Xz39_XqdXfHd90rgyhPRLsuUEhtKPsg0TgGPrPlNLGbXXq-c7XcXNeq7XIbClneLFd3M4AU6Kqx3SaaPGX_viRBzRd97E7ysOFyie7p1sDd7FwWASudZq_N9Qqs56gR8BcAWsV7fpE9hvka00ojwHH7FD06kXipFa_WjvTD_mtT1qrHNDEXI54VgLrjWS6wYbhn-eKAHEsTTjBv7nqpyCHRg6AJlQ",
-    "id_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiI5OWFjNmEzNS1hZDQ2LTQyODMtODU1NS00M2E5NGFhNjQ5NTMiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC85N2ZhMWY5Ni03ODc3LTQ2OWYtYWEzNy0xZjg1NjhlM2EzZmYvIiwiaWF0IjoxNjI1NDg3NjE2LCJuYmYiOjE2MjU0ODc2MTYsImV4cCI6MTYyNTQ5MTUxNiwiYW1yIjpbInB3ZCJdLCJmYW1pbHlfbmFtZSI6Ik1YIERhdGFsYWtlIiwiZ2l2ZW5fbmFtZSI6IlNlcnZpY2UiLCJpcGFkZHIiOiIxNzkuMTI3LjEzNS4xMzUiLCJuYW1lIjoiU2VydmljZSBNWCBEYXRhbGFrZSIsIm9pZCI6ImJhMTYwYTE0LTBjYzgtNDBjNy05ZjhiLTRkNTYyOTk5ZTlmNSIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMDEwOTE1ODAyLTQyMjM0Nzk1MjEtOTczMzI5NTMwLTExNTczIiwicmgiOiIwLkFRb0FsaF82bDNkNG4wYXFOeC1GYU9Pal96VnFySmxHcllOQ2hWVkRxVXFtU1ZNS0FGby4iLCJzdWIiOiJuZVFGQjV3blg2MWNqRmdmYktPbEdTQ0MyWE03ZzNIcFZtVGxNSzNZV3pnIiwidGlkIjoiOTdmYTFmOTYtNzg3Ny00NjlmLWFhMzctMWY4NTY4ZTNhM2ZmIiwidW5pcXVlX25hbWUiOiJzdmMubXhkYXRhbGFrZUBjb21wYXNzby5jb20uYnIiLCJ1cG4iOiJzdmMubXhkYXRhbGFrZUBjb21wYXNzby5jb20uYnIiLCJ2ZXIiOiIxLjAifQ."
+    "refresh_token": "0.AQoAlh_6l3d4n0aqNx-F...HNDEXI54VgLrjWS6wYbhn-eKAHEsTTjBv7nqpyCHRg6AJlQ",
+    "id_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJu...by5jb20uYnIiLCJ2ZXIiOiIxLjAifQ."
     }""")
 
     assert authToken == auth.getToken(
