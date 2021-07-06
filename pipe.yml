@@ -1,5 +1,5 @@
 name: Power BI Publish
-image: dfrnks/power-bi-publish:0.1.1@sha256:dace5f30ebc8f00a1f2f4b46d2c683ee1f5b9bb56a79bf32e421843d46cdd705
+image: dfrnks/power-bi-publish:0.1.2@sha256:19191dcbaa656e506a8e8d7ef101856d4fa4655e86b051542a2b2bd183353fc3
 description: This pipe will publish .pbix files into Power BI Service
 repository: https://bitbucket.org/dfrnks/power-bi-publish
 maintainer: douglasfrancardoso@gmail.com

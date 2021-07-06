@@ -1,0 +1,6 @@
+[
+  {
+    "description": "Creating the workspace and upload the .pbix files.",
+    "type": "patch"
+  }
+]
