@@ -76,9 +76,14 @@ class PowerBiPublishPipe(Pipe):
                 status = "Unknown"
                 while status != "Completed":
                     try:
-                        result = datasets.getRefreshes(groupId=workspaceId, datasetId=datasetId, top=1)
+                        result = datasets.getRefreshes(
+                            accessToken=self.accessToken,
+                            groupId=workspaceId,
+                            datasetId=datasetId,
+                            top=1
+                        )
 
-                        status = result["value"][0]["status"]
+                        status = result[0]["status"]
 
                         if status == "Failed":
                             logger.error("Not possible to update the dataset with id {}. "
@@ -198,13 +203,13 @@ class PowerBiPublishPipe(Pipe):
                 raise Exception("Not found any Data Sources, check the configuration of the gateway!")
 
             # In this moment check just the first Data Source
-            if "datasourceId" not in result[0] or "gatewayId" not in result[0]:
+            if "datasourceId" not in datasources[0] or "gatewayId" not in datasources[0]:
                 if not self.bindDatasourceToGatewayDatasource(
                     workspaceId=workspaceId,
                     datasetId=datasetId,
                     gateway=gateway
                 ):
-                    logger.error("Not possible bind the gateway to data source, check the configurations!")
+                    logger.warning("Not possible bind the gateway to data source, check the configurations!")
 
             # Update Report
             datasets.forceRefresh(
