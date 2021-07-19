@@ -60,10 +60,10 @@ Basic example:
 script:
   - pipe: dfrnks/power-bi-publish:0.1.2
     variables:
-      USERNAME: "username"
-      PASSWORD: "password"
-      CLIENT_ID: "xxxx-xxx-xxxx"
-      CLIENT_SECRET: "yyy-yyyy-yyy"
+      USERNAME: $USERNAME
+      PASSWORD: $PASSWORD
+      CLIENT_ID: $CLIENT_ID
+      CLIENT_SECRET: $CLIENT_SECRET
       WORKSPACE: "The My Workspace"
       DIRECTORY_PBIX: "workspaces/the_my_workspace"
       GATEWAY: "My Gateway:My Data Source"
@@ -81,10 +81,10 @@ Advanced example:
 script:
   - pipe: dfrnks/power-bi-publish:0.1.2
     variables:
-      USERNAME: "username"
-      PASSWORD: "password"
-      CLIENT_ID: "xxxx-xxx-xxxx"
-      CLIENT_SECRET: "yyy-yyyy-yyy"
+      USERNAME: $USERNAME
+      PASSWORD: $PASSWORD
+      CLIENT_ID: $CLIENT_ID
+      CLIENT_SECRET: $CLIENT_SECRET
       WORKSPACE: "The My Workspace"
       DIRECTORY_PBIX: "workspaces/the_my_workspace"
       GATEWAY: "My Gateway:My Data Source"
@@ -108,4 +108,4 @@ If you’re reporting an issue, please include:
 - relevant logs and error messages
 - steps to reproduce
 
-You can donate if you want in this link [Donation](https://www.paypal.com/donate?hosted_button_id=6GMU7LV7CAN54)
+If you want donate, you can do in this link [Donation](https://www.paypal.com/donate?hosted_button_id=6GMU7LV7CAN54)
